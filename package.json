@@ -1,0 +1,30 @@
+{
+  "name": "crypt-maker-async",
+  "version": "0.1.1",
+  "description": "An async version of crypt-maker",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NumminorihSF/crypt-maker-async.git"
+  },
+  "keywords": [
+    "crypt",
+    "nodejs",
+    "iojs",
+    "crypt-maker",
+    "async"
+  ],
+  "author": "Konstantine Petryaev <numminorihsf@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NumminorihSF/crypt-maker-async/issues"
+  },
+  "homepage": "https://github.com/NumminorihSF/crypt-maker-async#readme",
+  "dependencies": {
+    "child-watcher": "^0.1.6",
+    "crypt-maker": "^0.1.7"
+  }
+}
