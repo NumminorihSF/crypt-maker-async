@@ -27,33 +27,39 @@ function CryptMaker (options){
     this.threads = new (require('child-watcher')).Master();
     this.ceiling = options.ceiling || 2;
     this.spawnWorkerTimeout = options.spawnWorkerTimeout || 50;
-    options.cryptParams = options.cryptParams || {key: String(Math.random())};
-    this.cryptParams = options.cryptParams;
+    if (options.algorithm !== 'no' && !options.key) throw Error('need key');
+    options.key = options.key || String(Math.random());
+    this.cryptParams = options;
     this.runned = 0;
     return this;
 }
 
 CryptMaker.prototype.startWorker = function(){
    // console.log(this.runned < this.ceiling, this.threads.getAveLoad() > this.spawnWorkerTimeout);
-    if (this.runned < this.ceiling && this.threads.getAveLoad() > this.spawnWorkerTimeout || this.runned === 0) {
-        var child = this.threads.newChild(this.runned, {shouldRespawn: true, filePath: __dirname + '/lib/worker.js'});
-        child.ipc({action:'setOptions', options: this.cryptParams}, function(err, data){
-            if (err) return console.error('SETERROR', err);
-            console.error('SET');
-        });
-        child.on('error', function (err) {
-            console.error('Error in worker:', err);
-        });
-        child.on('close', function(code){
-            if (code) return console.error('Worker closed with code:', code);
-            console.log('Worker closed');
-        });
-        var old = this.runned;
-        this.runned = this.ceiling*2;
-        var wait = this.spawnWorkerTimeout*100;
-        setTimeout(function(){
-            this.runned = old+1;
-        }.bind(this), wait);
+    if (this.runned < this.ceiling) {
+        if (this.threads.getAveLoad() > this.spawnWorkerTimeout || this.runned === 0) {
+            var child = this.threads.newChild(this.runned, {
+                shouldRespawn: true,
+                filePath: __dirname + '/lib/worker.js'
+            });
+            child.ipc({action: 'setOptions', options: this.cryptParams}, function (err, data) {
+                if (err) return console.error('SETERROR', err);
+                console.error('SET');
+            });
+            child.on('error', function (err) {
+                console.error('Error in worker:', err);
+            });
+            child.on('close', function (code) {
+                if (code) return console.error('Worker closed with code:', code);
+                console.log('Worker closed');
+            });
+            var old = this.runned;
+            this.runned = this.ceiling * 2;
+            var wait = this.spawnWorkerTimeout * 100;
+            setTimeout(function () {
+                this.runned = old + 1;
+            }.bind(this), wait);
+        }
     }
 };
 

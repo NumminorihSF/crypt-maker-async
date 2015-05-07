@@ -1,10 +1,9 @@
 var crypt = new (require('./index.js'))({
     ceiling: 10,
     spawnWorkerTimeout: 100,
-    cryptParams: {
-        algorithm: 'aes128',
-        key: 'qweqwerljgi3i234oijfoiw23r234243234erwr'
-    }
+    algorithm: 'aes128',
+    key: 'qweqwerljgi3i234oijfoiw23r234243234erwr'
+
 });
 
 var func = function(){

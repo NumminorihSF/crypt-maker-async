@@ -1,11 +1,9 @@
 crypt-maker
 ===========================
 
-An asynchronous version of crypt-maker. Work through child-processes.
+An asynchronous version of crypt-maker. Spawn child processes and do encrypt and decrypt at them.
 
 #Atention
-
-Readme is not ready. It is just from sync version.
 
 Install with:
 
@@ -46,6 +44,14 @@ Simple example:
             });
         });
         
+    crypt.makeMessage(messageJSON, function(err, encryptedMessage){
+        //todo something
+        
+        crypt.parseMessage(encryptedMessage, function(err, message){
+                //todo something
+                // message==makeMessage
+            })
+    })
 ```
 
 
@@ -65,75 +71,62 @@ If `algorithm !== 'no'` and no key passed to constructor - throws error
 * `EOM`: which symbols indicate ends of messages. Default `\r\n\r\n`
 * `SOP`: which symbols indicate separate between header and message. Default `\r\n`
 * `headerEncrypted`: `true` if header should encrypted. Default `false`
+* `ceiling` max number of worker. Default `2`
+* `spawnWorkerTimeout` number (ms). If worker do its work longer, than this, will try to spawn one more wokrer. Default `50` Be careful, too small timeout will spawn too many workers.
 
 ## cm.decrypt(message, callback) 
 
-Return decrypted string. If `algorithm == 'no` returns `message`.
+Return decrypted string. If `algorithm == 'no'` returns `message`.
 
+Parameters:
 
+Name 	| Type    |	Description
+--------|---------|--------------------
+message | string  |	encrypted message
+callback| function| 
 
 ## cm.encrypt(message, callback)
 
-Return encrypted string. If `algorithm == 'no` returns `message`.
+Return encrypted string. If `algorithm == 'no'` returns `message`.
 
+Parameters:
 
+Name 	| Type    |	Description
+--------|---------|--------------------
+message | string  |	message to decrypt
+callback| function| 
 
 
 ## cm.getBody(message, callback)
 
 Get body from encrypted message. If `typeof message == undefined || message length == 0` 
-or no SOP at message, returns `null`. Else if can't parse message - return `null`.
+or no SOP at message, returns error object.
 
 Parameters:
 
-Name 	| Type   |	Description
---------|--------|--------------------
-message | string |	encrypted message
+Name 	| Type    |	Description
+--------|---------|--------------------
+message | string  |	encrypted message
+callback| function| 
 
 
-## cm.getBodyAsync(message, callback)
-
-Same as sync version. But doesn't return `null`, and returns error objects.
-**Is not realy async!**
-
-Parameters:
-
-Name 	 | Type    | Description
----------|---------|------------------
-message  | string  | encrypted message
-callback | function| 	
-
-
-## cm.getHeader(message)
+## cm.getHeader(message, callback)
 
 Get header from encrypted message. If `typeof message == undefined || message.length == 0` 
-or no SOP at message, returns `null`. Else if can't parse message - return `null`.
+or no SOP at message, returns error object.
 
 Parameters:
 
-Name 	| Type   |	Description
---------|--------|--------------------
-message | string |	encrypted message
+Name 	| Type    |	Description
+--------|---------|--------------------
+message | string  |	encrypted message
+callback| function| 
 
 
-## cm.getHeaderAsync(message, callback)
-
-Same as sync version. But doesn't return `null`, and returns error objects.
-**Is not realy async!**
-
-Parameters:
-
-Name 	 | Type    | Description
----------|---------|------------------
-message  | string  | encrypted message
-callback | function| 	
-
-
-## cm.makeMessage(message)
+## cm.makeMessage(message, callback)
 
 Make encrypt message form object.
 
-Parameters:
 
 Parameters:
 
@@ -142,80 +135,21 @@ Name          |	Type           |	Description
 message       | Object         | Properties	
 message.header|	Object, string |
 message.body  |	Object, string |	
-
-
-
-## cm.makeMessageAsync(message, callback)
-
-Same as sync version. But doesn't return `null`, and returns error objects.
-**Is not realy async!**
-
-
-Parameters:
-
-Name          |	Type           |	Description
---------------|----------------|----------------
-message       | Object         | Properties	
-message.header|	Object, string |
-message.body  |	Object, string |	
-callback      | function       | 
+callback      | function       | returns error or encrypted message 
 
 
 
 
-## cm.parseMessage(message)
+## cm.parseMessage(message, callback)
 
-Decrypt message form object. Returns Object `{header: ... , body: ... }`
+Decrypt message form object. Returns error or Object `{header: ... , body: ... }`
 
 Parameters:
 
 Name     |	Type  |	Description
 ---------|--------|----------------
 message  | string | 
-
-
-## cm.splitMessages(raw)
-
-Splits many messages to array of messages.
-
-Parameters:
-
-Name 	| Type   |	Description
---------|--------|---------------
-raw 	| string |	raw messages string
-
-Returns:
-return `[]` if no EOMs at the end of raw strings
-
-
-## cm.splitMessagesAsync(raw)
-
-Splits many messages to array.
-
-Parameters:
-
-Name 	 | Type   | 	Description
----------|--------|---------------
-raw 	 |string  | 	messages
-callback |function| 	
-
-Returns:
-return `[]` if no EOMs at the end of raw strings
-
-## cm.addEom(string)
-
-Splits many messages to array.
-
-Parameters:
-
-Name 	 | Type   | 	Description
----------|--------|---------------
-string 	 |string  | 	one encrypted message
-	
-
-Returns:
-return string+EOM symbol.
-
+callback |function|
 
 
 # LICENSE - "MIT License"

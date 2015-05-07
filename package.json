@@ -1,6 +1,6 @@
 {
   "name": "crypt-maker-async",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "An async version of crypt-maker",
   "main": "index.js",
   "scripts": {
